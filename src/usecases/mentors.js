@@ -1,16 +1,24 @@
 const mentor = require('../models/mentors')
 
-async function getAll () {
-  const allMentors = await mentor.find()
-  return allMentors
+function getAll () {
+  return mentor.find()
 }
 
-async function create (mentorData) {
-  const mentorCreated = await mentor.create(mentorData)
-  return mentorCreated
+function create (mentorData) {
+  return mentor.create(mentorData)
+}
+
+function deleteById (id) {
+  return mentor.findByIdAndDelete(id)
+}
+
+function updateById (id, newKoderData) {
+  return mentor.findByIdAndUpdate(id, newKoderData)
 }
 
 module.exports = {
   getAll,
-  create
+  create,
+  deleteById,
+  updateById
 }
