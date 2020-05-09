@@ -1,10 +1,22 @@
 const express = require('express')
 const koders = require('../usecases/koders')
 
+const auth = require('../Middlewares/auth')
+
 const router = express.Router()
 
-// /koders/
-router.get('/', async (req, res) => {
+// Middleware a nivel de router
+router.use((req, res, next) => {
+  console.log('Middleware router koders')
+  next()
+})
+
+// GET /koders/
+// endpoint
+router.get('/', (req, res, next) => {
+  console.log('Middleware en GET /koders')
+  next()
+}, async (req, res) => {
   try {
     const allKoders = await koders.getAll()
     res.json({
@@ -49,7 +61,7 @@ router.post('/', async (req, res) => {
 })
 */
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   try {
     const newKoder = await koders.create(req.body)
     res.json({
@@ -112,6 +124,24 @@ router.patch('/:id', async (req, res) => {
   }
 })
 
-module.exports = router
+// Registro de Koders
+router.post('/signup', async (req, res) => {
+  try {
+    const newKoder = await koders.signup(req.body)
+    res.json({
+      success: true,
+      message: 'Koder registered',
+      data: {
+        koder: newKoder
+      }
+    })
+  } catch (error) {
+    res.status(400)
+    res.json({
+      success: false,
+      error: error.message
+    })
+  }
+})
 
-// try-catch
+module.exports = router
